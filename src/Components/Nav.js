@@ -37,10 +37,10 @@ function Nav() {
             {/* Right elements */}
             <div class="col-md-4 d-flex justify-content-center justify-content-md-end align-items-center">
               <div class="d-flex">
-                <Link to="/" className="nav-link me-3">
+                <Link to="/login" className="nav-link me-3">
                   Login
                 </Link>
-                <Link to="/" className="nav-link">
+                <Link to="/register" className="nav-link">
                   Register
                 </Link>
               </div>
