@@ -7,6 +7,8 @@ import './App.css'; // Import your CSS styles if needed
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import News from './News';
 import Nav from './Nav';
+import LoginPage from './LoginPage'; 
+import RegisterPage from './RegisterPage';
 
 function App() {
   return (
@@ -14,6 +16,8 @@ function App() {
       <div className="App">
         <Nav />
         <Switch>
+          <Route path="/login" element={<LoginPage/>} />
+          <Route path="/register" element={<RegisterPage/>} />
           <Route path="/Apple">
             <News newsName="iphone" />
           </Route>
