@@ -1,31 +1,30 @@
 import React, { useState } from "react";
-import ReactDOM from "react-dom";
+import ReactDOM,{createRoot } from "react-dom/client";
 import "./index.css";
 import News from "./news";
 import Nav from "./nav";
 import LoginPage from "./LoginPage";
 import RegisterPage from "./RegisterPage";
-import {BrowserRouter,Switch,Route,Link} from "react-router-dom"
-import reportWebVitals from "./reportWebVitals";
+import {BrowserRouter,Switch,Route,Link,useNavigate,Routes} from "react-router-dom"
 
-ReactDOM.render(
+
+const root = document.getElementById('root');
+const reactRoot = createRoot(root);
+
+reactRoot.render(
   <BrowserRouter>
-  <>
+  <></>
   <Nav />
-    <Route path="/login" element={<LoginPage />} />
-    <Route path="/register" element={<RegisterPage />} />
-    <Route exact path="/Apple"><News newsName="iphone" /></Route>
-    <Route path="/Tesla"><News newsName="tesla" /></Route>
-    <Route path="/Bitcoin"><News newsName="bitcoin" /></Route>
-    <Route path="/nasa"><News newsName="nasa" /></Route>
-    <Route path="/upsc"><News newsName="upsc" /></Route>
-    
-  </>
-  </BrowserRouter>,
-  document.getElementById("root")
-);
+ <Routes>
+  <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/Apple" element={<News newsName="iphone" />} />
+        <Route path="/Tesla" element={<News newsName="tesla" />} />
+        <Route path="/Bitcoin" element={<News newsName="bitcoin" />} />
+        <Route path="/Nasa" element={<News newsName="nasa" />} />
+        <Route path="/upsc" element={<News newsName="upsc" />} />
+        </Routes>
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+  </BrowserRouter>
+ 
+);
