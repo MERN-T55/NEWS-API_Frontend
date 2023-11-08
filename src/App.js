@@ -1,8 +1,4 @@
-import './App.css';
 import React, {useEffect, useState} from 'react';
-
-
-import React from 'react';
 import './App.css'; // Import your CSS styles if needed
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import News from './News';
