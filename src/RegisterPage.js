@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import "./style.css";
 
 function RegisterPage() {
@@ -8,7 +8,7 @@ function RegisterPage() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
-  const navigate = useNavigate();
+  
 
   const handleRegister = () => {
     if (!username || !email || !password || !confirmPassword) {
@@ -23,7 +23,7 @@ function RegisterPage() {
       setError('Username can only contain letters, numbers, and underscores.');
     } else {
  
-      navigate('/');
+       return <Link to="/Apple" />;
     }
   }
 
