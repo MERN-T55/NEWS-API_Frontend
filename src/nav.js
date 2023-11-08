@@ -10,6 +10,8 @@ let n=<header class="text-gray-600 body-font">
       <span class="ml-3 text-xl">News</span>
     </a>
     <nav class="md:mr-auto md:ml-4 md:py-1 md:pl-4 md:border-l md:border-gray-400	flex flex-wrap items-center text-base justify-center">
+      <Link class="mr-5 hover:text-gray-900" to="/login">Login</Link>
+      <Link class="mr-5 hover:text-gray-900" to="/register">Register</Link>
       <Link class="mr-5 hover:text-gray-900" to="/Apple">Apple</Link>
       <Link class="mr-5 hover:text-gray-900" to="/Tesla">Tesla</Link>
       <Link class="mr-5 hover:text-gray-900" to="/Bitcoin">Bitcoin</Link>
