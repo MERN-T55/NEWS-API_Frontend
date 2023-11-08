@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; 
+import { Link } from 'react-router-dom'; 
 import "./style.css";
 
 function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const navigate = useNavigate();
+  
 
   const handleLogin = () => {
  
@@ -20,7 +20,7 @@ function LoginPage() {
       const isAuthenticated = true;
 
       if (isAuthenticated) {
-        navigate('/'); 
+        return <Link to="/Apple" />;
       }
     }
   }
