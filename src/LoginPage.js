@@ -1,29 +1,59 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom'; 
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import "./style.css";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function LoginPage() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  
+  const navigate=useNavigate();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  const handleLogin = () => {
- 
+  const handleSuccess = (msg) =>
+    toast.success(msg, {
+      position: "bottom-left",
+    });
+
+  const handleError = (err) =>
+    toast.error(err, {
+      position: "bottom-left",
+    });
+
+  const handleLogin = async () => {
     if (!username || !password) {
-      setError('Please fill in both fields.');
+      setError("Please fill in both fields.");
     } else if (password.length < 8) {
-      setError('Incorrect password');
+      setError("Password cannot be that short.");
     } else {
-   
-      setError('');
-      const isAuthenticated = true;
+      setError("");
+      try {
+        const response = await axios.post(
+          "http://localhost:4000/login",
+          {
+            username,
+            password,
+          },
+          { withCredentials: true }
+        );
 
-      if (isAuthenticated) {
-        return <Link to="/Apple" />;
+        const { success, message } = response.data;
+
+        if (success) {
+          handleSuccess(message);
+          console.log("Here");
+          setTimeout(() => {
+            navigate("/Apple");
+          }, 1000);
+        } else {
+          handleError(message);
+        }
+      } catch (error) {
+        handleError("An error occurred while logging in.");
       }
     }
-  }
+  };
 
   return (
     <div className="login-container">
@@ -49,10 +79,13 @@ function LoginPage() {
           onChange={(e) => setPassword(e.target.value)}
         />
       </div>
-      <button className="btn btn-primary" onClick={handleLogin}>Login</button>
+      <button className="btn btn-primary" onClick={handleLogin}>
+        Login
+      </button>
       <p>
         Don't have an account? <Link to="/register">Register</Link>
       </p>
+      <ToastContainer />
     </div>
   );
 }
