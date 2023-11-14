@@ -1,50 +1,71 @@
+// News.js
+
 import React from "react";
 import spinner from "./spinner.gif"; // Make sure to import your spinner GIF
+import { Link } from "react-router-dom";
 
 class News extends React.Component {
   constructor(props) {
     super(props);
-    console.log("i am constructor");
-    this.state = { name1: [], count: 0, loading: false };
+    this.state = {
+      articles: [],
+      loading: false,
+      searchTerm: "",
+    };
   }
 
   async fetchData() {
-    console.log("Fetching data...");
-    this.setState({ loading: true }); // Set loading state
+    this.setState({ loading: true });
 
     try {
-      let res = await fetch(
-        `https://newsapi.org/v2/everything?q=${this.props.newsName}&apiKey=3aad5964299e46df80136a78b25f63be`
-      );
+      let url;
+
+      if (this.state.searchTerm) {
+        // If there's a search term, fetch data based on the search term
+        url = `https://newsapi.org/v2/everything?q=${encodeURIComponent(this.state.searchTerm)}&apiKey=3aad5964299e46df80136a78b25f63be`;
+      } else {
+        // Fetch data based on the default news category (this.props.newsName)
+        url = `https://newsapi.org/v2/everything?q=${this.props.newsName}&apiKey=3aad5964299e46df80136a78b25f63be`;
+      }
+
+      let res = await fetch(url);
       let data = await res.json();
-      let arr = data.articles.map((p) => {
+      let articles = data.articles.map((article) => {
         return (
-          <div class="p-8" key={p.title}>
-            {/* <!--Card 1--> */}
-            <div class="max-w-sm rounded overflow-hidden shadow-lg">
-              <img class="w-full" src={p.urlToImage} alt={p.title} />
-              <div class="px-6 py-4">
-                <div class="font-bold text-xl mb-2">{p.title}</div>
-                <p class="text-gray-700 text-base">{p.description}</p>
-                <button class="font-bold text-xl mb-2">
-                  <a href={p.url}>Read more</a>
+          <div className="p-8" key={article.title}>
+            <div className="max-w-sm rounded overflow-hidden shadow-lg">
+              <img className="w-full" src={article.urlToImage} alt={article.title} />
+              <div className="px-6 py-4">
+                <div className="font-bold text-xl mb-2">{article.title}</div>
+                <p className="text-gray-700 text-base">{article.description}</p>
+                <button className="font-bold text-xl mb-2">
+                  <a href={article.url}>Read more</a>
                 </button>
               </div>
-              <div class="px-6 pt-4 pb-2">
-                <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#{p.author}</span>
-                <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#{p.source.name}</span>
-                <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#{p.publishedAt}</span>
+              <div className="px-6 pt-4 pb-2">
+                <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#{article.author}</span>
+                <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#{article.source.name}</span>
+                <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#{article.publishedAt}</span>
               </div>
             </div>
           </div>
         );
       });
-      console.log("Data fetched successfully");
-      this.setState({ name1: arr, loading: false }); // Clear loading state
+
+      this.setState({ articles, loading: false });
     } catch (error) {
       console.error("Error fetching data: ", error);
-      this.setState({ loading: false }); // Clear loading state
+      this.setState({ loading: false });
     }
+  }
+
+  handleSearchChange = (event) => {
+    this.setState({ searchTerm: event.target.value });
+  }
+
+  handleSearchSubmit = (event) => {
+    event.preventDefault();
+    this.fetchData();
   }
 
   componentDidMount() {
@@ -53,18 +74,28 @@ class News extends React.Component {
 
   render() {
     return (
-      <div class="p-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-1">
+      <div className="mx-4 p-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-1">
+        <form onSubmit={this.handleSearchSubmit} className="flex mb-4">
+          <input
+            type="text"
+            value={this.state.searchTerm}
+            onChange={this.handleSearchChange}
+            placeholder="Search for news..."
+            className="text-base h-10"
+          />
+          <button type="submit" className="bg-blue-500 text-white p-2 ml-2 rounded h-10">
+            Search
+          </button>
+        </form>
+
         {this.state.loading ? (
           <img src={spinner} alt="Loading" style={{ width: "300px", margin: "auto" }} />
         ) : (
-          this.state.name1
+          this.state.articles
         )}
-        <button
-          class="font-bold text-xl mb-2"
-          onClick={() => this.fetchData()} // Reload icon, calls fetchData when clicked
-        >
-          <i class="fas fa-sync"></i> <h1>Fetching DATA</h1>
-        </button>
+        <Link to="/reload" className="font-bold text-xl mb-2">
+          <i className="fas fa-sync"></i> <h1>Fetching DATA</h1>
+        </Link>
       </div>
     );
   }
