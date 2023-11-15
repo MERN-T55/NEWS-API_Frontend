@@ -6,11 +6,14 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function RegisterPage() {
-  const navigate=useNavigate();
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [selectedOptions, setSelectedOptions] = useState([]);
+  const [customOptions, setCustomOptions] = useState([]);
+  const predefinedOptions = ["Sports", "Music", "Technology"];
   const [error, setError] = useState("");
 
   const handleError = (err) =>
@@ -21,6 +24,28 @@ function RegisterPage() {
     toast.success(msg, {
       position: "bottom-right",
     });
+
+  const handleCustomOptionSubmit = (e) => {
+    e.preventDefault();
+    const Option = e.target.elements.option.value.trim();
+    const newOption =
+      Option.charAt(0).toUpperCase() + Option.slice(1).toLowerCase();
+    if (
+      !predefinedOptions.includes(newOption) &&
+      !customOptions.includes(newOption)
+    ) {
+      setCustomOptions([...customOptions, newOption]);
+      e.target.elements.option.value = "";
+    }
+  };
+
+  const handleOptionChange = (option) => {
+    if (selectedOptions.includes(option)) {
+      setSelectedOptions(selectedOptions.filter((item) => item !== option));
+    } else {
+      setSelectedOptions([...selectedOptions, option]);
+    }
+  };
 
   const handleRegister = async () => {
     if (!username || !email || !password || !confirmPassword) {
@@ -33,28 +58,31 @@ function RegisterPage() {
       setError("Invalid email address.");
     } else if (!isValidUsername(username)) {
       setError("Username can only contain letters, numbers, and underscores.");
+    } else if (selectedOptions.length < 1) {
+      setError("Select atleast one preference.");
     } else {
       try {
+        console.log(selectedOptions);
         const response = await axios.post(
           "http://localhost:4000/signup",
           {
             username,
             email,
             password,
+            preferences: selectedOptions,
           },
           { withCredentials: true }
         );
         console.log("Response Data:", response.data);
-          if (response.data.success) {
-            handleSuccess("Registration successful.");
-            setTimeout(() => {
-              navigate("/Apple");
-            }, 1000);
-          } else {
-            handleError("An error occurred while registering.");
-          }
+        if (response.data.success) {
+          handleSuccess("Registration successful.");
+          setTimeout(() => {
+            navigate("/forYou");
+          }, 1000);
+        } else {
+          handleError("An error occurred while registering.");
         }
-        catch (error) {
+      } catch (error) {
         if (error.response) {
           console.log("Error response:", error.response);
           const errorMessage = error.response.data.message;
@@ -118,6 +146,29 @@ function RegisterPage() {
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
         />
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="Preference">Preferences:</label>
+        <br />
+        {predefinedOptions.concat(customOptions).map((option) => (
+          <label htmlFor="option" id="prefoptions" key={option}>
+            <input
+              type="checkbox"
+              value={option}
+              checked={selectedOptions.includes(option)}
+              onChange={() => handleOptionChange(option)}
+            />
+            {option}
+          </label>
+        ))}
+
+        <form onSubmit={handleCustomOptionSubmit}>
+          <input className="form-control" type="text" name="option" />
+          <button className="btn btn-secondary" type="submit">
+            Add Preference
+          </button>
+        </form>
       </div>
       <button className="btn btn-primary" onClick={handleRegister}>
         Register

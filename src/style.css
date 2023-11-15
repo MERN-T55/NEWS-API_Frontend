@@ -25,6 +25,11 @@
   font-weight: bold;
 }
 
+#prefoptions {
+  font-weight: normal;
+  margin: 10px;
+}
+
 /* Styles for input fields */
 .form-control {
   width: 100%;
@@ -56,4 +61,31 @@
 
 .login-container a:hover {
   text-decoration: underline;
+}
+
+/* Styles for the "Preference" button */
+.btn-secondary {
+  width: 50%;
+  padding: 10px;
+  cursor: pointer;
+  display: block;
+  margin: 10px auto;
+}
+
+.btn-danger {
+  width: 70%;
+  padding: 10px;
+  cursor: pointer;
+  display: block;
+  margin: 10px auto;
+}
+
+.user-container {
+  width: 400px;
+  padding: 50px;
+  margin: 50px auto; /* Center the container and add margin on all sides */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
