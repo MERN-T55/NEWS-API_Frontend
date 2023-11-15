@@ -6,7 +6,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function LoginPage() {
-  const navigate=useNavigate();
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -44,7 +44,7 @@ function LoginPage() {
           handleSuccess(message);
           console.log("Here");
           setTimeout(() => {
-            navigate("/Apple");
+            navigate("/forYou");
           }, 1000);
         } else {
           handleError(message);
