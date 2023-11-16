@@ -87,44 +87,48 @@ function UserInfo() {
       });
   }, []);
 
-  return (
-    <div className="user-container">
-      <p>Username: {userData?.username}</p>
-      <p>Email: {userData?.email}</p>
-      <p>Preferences:</p>
-      {selectedOptions.map((option) => (
-        <label htmlFor="option" id="prefoptions" key={option}>
-          <input
-            id="pref"
-            type="checkbox"
-            value={option}
-            checked={selectedOptions.includes(option)}
-            onChange={() => handleOptionChange(option, userData?._id)}
-          />
-          {option}
-        </label>
-      ))}
+  if (userData) {
+    return (
+      <div className="user-container">
+        <p>Username: {userData.username}</p>
+        <p>Email: {userData.email}</p>
+        <p>Preferences:</p>
+        {selectedOptions.map((option) => (
+          <label htmlFor="option" id="prefoptions" key={option}>
+            <input
+              id="pref"
+              type="checkbox"
+              value={option}
+              checked={selectedOptions.includes(option)}
+              onChange={() => handleOptionChange(option, userData._id)}
+            />
+            {option}
+          </label>
+        ))}
 
-      <form
-        onSubmit={(event) => handleCustomOptionSubmit(event, userData?._id)}
-      >
-        <input className="form-control" type="text" name="option" />
-        <button className="btn btn-secondary" type="submit">
-          Add Preference
+        <form
+          onSubmit={(event) => handleCustomOptionSubmit(event, userData._id)}
+        >
+          <input className="form-control" type="text" name="option" />
+          <button className="btn btn-secondary" type="submit">
+            Add Preference
+          </button>
+        </form>
+
+        <button
+          className="btn btn-danger"
+          onClick={() => handleDelete(userData._id)}
+        >
+          Delete Account
         </button>
-      </form>
-
-      <button
-        className="btn btn-danger"
-        onClick={() => handleDelete(userData?._id)}
-      >
-        Delete Account
-      </button>
-      <button className="btn btn-danger" onClick={() => handleLogout()}>
-        Logout
-      </button>
-    </div>
-  );
+        <button className="btn btn-danger" onClick={() => handleLogout()}>
+          Logout
+        </button>
+      </div>
+    );
+  } else {
+    return <div>Please login or register.</div>;
+  }
 }
 
 export default UserInfo;
