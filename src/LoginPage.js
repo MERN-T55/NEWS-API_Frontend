@@ -30,17 +30,17 @@ function LoginPage() {
       setError("");
       try {
         const response = await axios.post(
-          "http://localhost:4000/login",
+          "https://news-aggregator-3fk9.onrender.com/login",
           {
             username,
             password,
-          },
-          { withCredentials: true }
+          }
         );
 
         const { success, message } = response.data;
 
         if (success) {
+          localStorage.setItem("token", response.data.token);
           handleSuccess(message);
           console.log("Here");
           setTimeout(() => {
