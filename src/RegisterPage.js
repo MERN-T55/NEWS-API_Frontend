@@ -64,17 +64,17 @@ function RegisterPage() {
       try {
         console.log(selectedOptions);
         const response = await axios.post(
-          "http://localhost:4000/signup",
+          "https://news-aggregator-3fk9.onrender.com/signup",
           {
             username,
             email,
             password,
             preferences: selectedOptions,
-          },
-          { withCredentials: true }
+          }
         );
         console.log("Response Data:", response.data);
         if (response.data.success) {
+          localStorage.setItem("token", response.data.token);
           handleSuccess("Registration successful.");
           setTimeout(() => {
             navigate("/forYou");

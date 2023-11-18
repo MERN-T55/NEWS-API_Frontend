@@ -2,24 +2,29 @@ import axios from "axios";
 import News from "./news";
 import { useState, useEffect } from "react";
 
-const instance = axios.create({
-  withCredentials: true,
-});
+const instance = axios.create();
 
 function ForYou() {
   const [userData, setUserData] = useState(null);
+  const token = localStorage.getItem("token");
   useEffect(() => {
-    instance
-      .post("http://localhost:4000/userInfo")
-      .then((res) => {
-        setUserData(res.data.user);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
+    if (token) {
+      instance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      instance
+        .post("https://news-aggregator-3fk9.onrender.com/userInfo")
+        .then((res) => {
+          setUserData(res.data.user);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }, [token]);
   if (!userData) {
     return <div>Please login or register.</div>;
+  }
+  if (userData.preferences.length===0) {
+    return <div>Please select some preferences in Profile.</div>;
   }
   return (
     <div>

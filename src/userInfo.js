@@ -1,8 +1,6 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
-const instance = axios.create({
-  withCredentials: true,
-});
+const instance = axios.create({});
 
 function UserInfo() {
   const [userData, setUserData] = useState(null);
@@ -30,7 +28,7 @@ function UserInfo() {
 
   const handleUpdatePreferences = (userId, updatedOptions) => {
     axios
-      .put("http://localhost:4000/userInfo/" + userId, {
+      .put("https://news-aggregator-3fk9.onrender.com/userInfo/" + userId, {
         preferences: updatedOptions,
       })
       .then((res) => {
@@ -47,27 +45,17 @@ function UserInfo() {
   };
 
   const handleLogout = () => {
-    document.cookie.split(";").forEach(function (c) {
-      document.cookie =
-        c.trim().split("=")[0] +
-        "=;" +
-        "expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-    });
+    localStorage.clear();
     window.location.href = "/";
     alert("Logged out successfully");
   };
 
   const handleDelete = (userId) => {
     axios
-      .delete("http://localhost:4000/userInfo/" + userId)
+      .delete("https://news-aggregator-3fk9.onrender.com/userInfo/" + userId)
       .then((res) => {
         if (res.status === 200) {
-          document.cookie.split(";").forEach(function (c) {
-            document.cookie =
-              c.trim().split("=")[0] +
-              "=;" +
-              "expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-          });
+          localStorage.clear();
           window.location.href = "/";
           alert("Account deleted successfully");
         } else Promise.reject();
@@ -76,8 +64,12 @@ function UserInfo() {
   };
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      instance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    }
     instance
-      .post("http://localhost:4000/userInfo")
+      .post("https://news-aggregator-3fk9.onrender.com/userInfo")
       .then((res) => {
         setUserData(res.data.user);
         setSelectedOptions(res.data.user.preferences);
