@@ -1,8 +1,6 @@
 // News.js
-
 import React from "react";
 import spinner from "./spinner.gif";
-import { Link } from "react-router-dom";
 
 class News extends React.Component {
   constructor(props) {
@@ -11,8 +9,8 @@ class News extends React.Component {
       articles: [],
       loading: false,
       searchTerm: "",
-      sortField: "publishedAt", // Default sort field
-      sortOrder: "desc", // Default sort order
+      sortField: "publishedAt",
+      sortOrder: "desc",
     };
   }
 
@@ -23,16 +21,16 @@ class News extends React.Component {
       let url;
 
       if (this.state.searchTerm) {
-        url = `https://newsapi.org/v2/everything?q=${encodeURIComponent(this.state.searchTerm)}&apiKey=3aad5964299e46df80136a78b25f63be`;
-      } else {
-        url = `https://newsapi.org/v2/everything?q=${this.props.newsName}&apiKey=3aad5964299e46df80136a78b25f63be`;
-      }
+        url = `https://newsapi.org/v2/everything?q=${encodeURIComponent(this.state.searchTerm)}&apiKey=dca1f06731124a10960e18e5c27512f4`;
 
+
+      } else {
+        url = `https://newsapi.org/v2/everything?q=${encodeURIComponent(this.props.newsName)}&apiKey=dca1f06731124a10960e18e5c27512f4`;
+      }
       let res = await fetch(url);
       let data = await res.json();
       let articles = data.articles;
 
-      // Sort articles based on the selected field and order
       articles.sort((a, b) => {
         const aValue = a[this.state.sortField];
         const bValue = b[this.state.sortField];
@@ -44,24 +42,33 @@ class News extends React.Component {
         }
       });
 
-      // Map the sorted articles to JSX elements
       articles = articles.map((article) => (
         <div className="p-8" key={article.title}>
-           <div className="max-w-sm rounded overflow-hidden shadow-lg">
-              <img className="w-full" src={article.urlToImage} alt={article.title} />
-              <div className="px-6 py-4">
-                <div className="font-bold text-xl mb-2">{article.title}</div>
-                <p className="text-gray-700 text-base">{article.description}</p>
-                <button className="font-bold text-xl mb-2">
-                  <a href={article.url}>Read more</a>
-                </button>
-              </div>
-              <div className="px-6 pt-4 pb-2">
-                <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#{article.author}</span>
-                <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#{article.source.name}</span>
-                <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#{article.publishedAt}</span>
-              </div>
+          <div className="max-w-sm rounded overflow-hidden shadow-lg">
+            <img
+              className="w-full"
+              src={article.urlToImage}
+              alt={article.title}
+            />
+            <div className="px-6 py-4">
+              <div className="font-bold text-xl mb-2">{article.title}</div>
+              <p className="text-gray-700 text-base">{article.description}</p>
+              <button className="font-bold text-xl mb-2">
+                <a href={article.url}>Read more</a>
+              </button>
             </div>
+            <div className="px-6 pt-4 pb-2">
+              <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
+                #{article.author}
+              </span>
+              <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
+                #{article.source.name}
+              </span>
+              <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
+                #{article.publishedAt}
+              </span>
+            </div>
+          </div>
         </div>
       ));
 
@@ -69,6 +76,15 @@ class News extends React.Component {
     } catch (error) {
       console.error("Error fetching data: ", error);
       this.setState({ loading: false });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (
+      this.state.searchTerm !== prevState.searchTerm ||
+      this.props.newsName !== prevProps.newsName
+    ) {
+      this.fetchData();
     }
   }
 
@@ -80,7 +96,6 @@ class News extends React.Component {
         return obj.popularity || 0;
       case "author":
         return obj.author || "";
-      // Add more cases for other fields as needed
       default:
         return "";
     }
@@ -98,14 +113,14 @@ class News extends React.Component {
   handleSortChange = (event) => {
     const { value } = event.target;
     this.setState({ sortField: value }, () => {
-      this.fetchData(); // Fetch data again after changing the sort field
+      this.fetchData();
     });
   };
 
   handleOrderChange = (event) => {
     const { value } = event.target;
     this.setState({ sortOrder: value }, () => {
-      this.fetchData(); // Fetch data again after changing the sort order
+      this.fetchData();
     });
   };
 
@@ -115,21 +130,23 @@ class News extends React.Component {
 
   render() {
     return (
-      <div className="mx-4 p-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-1">
-        <form onSubmit={this.handleSearchSubmit} className="flex mb-4">
-        <input
+      <div className="mx-4 p-2">
+        <form onSubmit={this.handleSearchSubmit} style={{ marginBottom: "8px" }}>
+          <input
             type="text"
             value={this.state.searchTerm}
             onChange={this.handleSearchChange}
             placeholder="Search for news..."
             className="text-base h-10"
           />
-          <button type="submit" className="bg-blue-500 text-white p-2 ml-2 rounded h-10">
+          <button
+            type="submit"
+            className="bg-blue-500 text-white p-2 ml-2 rounded h-10"
+          >
             Search
           </button>
         </form>
-
-        <div className="mb-4">
+        <div className="mb-2" style={{ marginBottom: 0 }}>
           <label htmlFor="sortField" className="mr-2">
             Sort By:
           </label>
@@ -140,9 +157,7 @@ class News extends React.Component {
             className="text-base h-10"
           >
             <option value="publishedAt">Published Date</option>
-            <option value="popularity">Popularity</option>
             <option value="author">Author</option>
-           
           </select>
           <select
             id="sortOrder"
@@ -154,16 +169,19 @@ class News extends React.Component {
             <option value="asc">Ascending</option>
           </select>
         </div>
-
-        {this.state.loading ? (
-          <img src={spinner} alt="Loading" style={{ width: "300px", margin: "auto" }} />
-        ) : (
-          this.state.articles
-        )}
-
-        <Link to="/reload" className="font-bold text-xl mb-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-1">
+          {this.state.loading ? (
+            <img src={spinner} alt="Loading" style={{ width: "300px", margin: "auto" }} />
+          ) : (
+            this.state.articles
+          )}
+        </div>
+        <button
+          className="font-bold text-xl mb-2"
+          onClick={() => this.fetchData()} 
+        >
           <i className="fas fa-sync"></i> <h1>Fetching DATA</h1>
-        </Link>
+        </button>
       </div>
     );
   }
